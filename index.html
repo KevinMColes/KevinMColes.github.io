@@ -66,6 +66,7 @@
   .dispatch-card { position: relative; background: #1E1F25; border-radius: 14px; padding: 30px 24px 26px; box-shadow: 0 18px 40px rgba(0,0,0,0.35); overflow: hidden; display: flex; flex-direction: column; gap: 12px; }
   .record-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   .record-card { background: #1E1F25; border-radius: 12px; padding: 22px 20px; box-shadow: 0 14px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; }
+  .proof-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   @media (max-width: 860px) {
     .hero-root { min-height: auto; }
     .hero-photo { align-self: auto; min-height: 56vh; }
@@ -76,7 +77,7 @@
     .elsewhere-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .dispatch-grid { grid-template-columns: 1fr; }
     .record-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; }
     .record-primary-grid { grid-template-columns: 1fr; }
     .record-index-row { flex-direction: column; }
     .record-index-row > a { border-left: none !important; border-top: 1px solid rgba(166,164,159,0.18) !important; padding-left: 0 !important; padding-right: 0 !important; }
@@ -196,7 +197,7 @@
       <p style="margin: 0; font-size: 1.08rem; line-height: 1.8; color: #A6A49F;">My responsibility has crossed enterprise architecture, infrastructure, cybersecurity, identity and access, cloud, endpoint strategy, application delivery, compliance, platform modernization, operational technology, and the standards and operating models surrounding them.</p>
       <p style="margin: 0; font-size: 1.08rem; line-height: 1.8; color: #A6A49F;">That breadth changed the nature of the work. The question stopped being whether I could design the technology. It became what should be done, what should be funded, what risk should be accepted, how the organization should get there, and who would own the result.</p>
 
-      <div class="proof-grid" style="margin-top: 20px; padding-top: 32px; border-top: 1px solid rgba(166,164,159,0.18); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px;">
+      <div class="proof-grid" style="margin-top: 20px; padding-top: 32px; border-top: 1px solid rgba(166,164,159,0.18); display: grid; gap: 24px;">
         <div style="display: flex; flex-direction: column; gap: 6px;">
           <span style="font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.5rem; color: #F2EFE8;">15 Years</span>
           <span style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #A6A49F;">Enterprise Technology</span>
