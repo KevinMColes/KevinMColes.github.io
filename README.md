@@ -10,7 +10,7 @@ A responsive, buildless website for GitHub Pages. No npm installation, framework
 - `/book/` — The One Who Would Be Okay (publication details pending)
 - `/media/` — coverage, biography and newsletter
 
-Shared styles: `assets/site.css`. Photos: `images/`. The approved photograph with the beard trim is `images/kevin-m-coles-podcast.webp`. Original files and existing downloads are retained.
+Shared styles: `assets/site.css`. Photos: `images/`. The approved photograph with the beard trim is `images/kevin-m-coles-podcast.webp`. The supplied book cover appears on Home and Book, with forthcoming status and a cover-subject-to-change note. Original files and existing downloads are retained.
 
 ## Deployment
 
@@ -18,7 +18,7 @@ Keep `CNAME` as `kevinmcoles.com`. Retain the repository's current GitHub Pages 
 
 ## Content updates
 
-Edit the relevant page's `index.html`. Use **Kevin M. Coles** consistently in visible copy and metadata. Keep light-section copy black. Before publication changes, replace both concept book-cover treatments and update the book's availability copy, metadata and structured data together. No ISBN, release date, publisher, endorsements or speaking credentials are invented.
+Edit the relevant page's `index.html`. Use **Kevin M. Coles** consistently in visible copy and metadata. Keep light-section copy black. Before publication changes, update both current book-cover treatments and update the book's availability copy, metadata and structured data together. No ISBN, release date, publisher, endorsements or speaking credentials are invented.
 
 ## Search setup
 
