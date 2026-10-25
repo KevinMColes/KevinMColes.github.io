@@ -78,3 +78,14 @@ html{scroll-behavior:smooth;background:#111615}body{margin:0}#kmc-site{min-heigh
 @media(max-width:850px){#kmc-site .speaking-opening{grid-template-columns:1fr}#kmc-site .speaking-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}#kmc-site .speaking-context>.eyebrow{grid-column:1/-1;margin-bottom:0}}
 @media(max-width:650px){#kmc-site .nav{padding-top:12px;padding-bottom:15px;gap:13px}#kmc-site .brand{width:185px}#kmc-site .speaking-context,#kmc-site .press-feature{grid-template-columns:1fr;gap:15px}#kmc-site .speaking-opening h1{font-size:43px;letter-spacing:-1.7px}#kmc-site .press-feature{padding:28px 0}#kmc-site .speaking-opening{padding-bottom:45px}}
 #kmc-site .press-quote{font:500 clamp(23px,2.5vw,32px)/1.35 Georgia,serif;margin:0 0 16px;letter-spacing:-.4px}#kmc-site .quote-credit{font-size:11px;text-transform:uppercase;letter-spacing:1.3px}
+
+/* Give the speaking overview and memoir separate visual beats. */
+#kmc-site [data-view="home"] .home-talks{padding-bottom:100px}
+#kmc-site [data-view="home"] .home-talks>h2{margin-bottom:40px}
+#kmc-site [data-view="home"] .home-talks .three{gap:36px}
+#kmc-site [data-view="home"] .home-talks .item{display:flex;flex-direction:column;align-items:flex-start}
+#kmc-site [data-view="home"] .home-talks .item .text-link{margin-top:auto}
+#kmc-site [data-view="home"] .home-book{position:relative;padding-top:105px;padding-bottom:100px}
+#kmc-site [data-view="home"] .home-book:before{content:"";position:absolute;left:7%;right:7%;top:0;height:1px;background:#11161529}
+#kmc-site [data-view="home"] .home-book .split{gap:80px}
+@media(max-width:650px){#kmc-site [data-view="home"] .home-talks{padding-bottom:65px}#kmc-site [data-view="home"] .home-talks>h2{margin-bottom:30px}#kmc-site [data-view="home"] .home-talks .three{gap:38px}#kmc-site [data-view="home"] .home-book{padding-top:70px;padding-bottom:65px}#kmc-site [data-view="home"] .home-book .split{gap:45px}}
