@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kevinmcoles.com/sitemap.xml
