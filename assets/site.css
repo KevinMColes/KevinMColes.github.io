@@ -89,3 +89,15 @@ html{scroll-behavior:smooth;background:#111615}body{margin:0}#kmc-site{min-heigh
 #kmc-site [data-view="home"] .home-book:before{content:"";position:absolute;left:7%;right:7%;top:0;height:1px;background:#11161529}
 #kmc-site [data-view="home"] .home-book .split{gap:80px}
 @media(max-width:650px){#kmc-site [data-view="home"] .home-talks{padding-bottom:65px}#kmc-site [data-view="home"] .home-talks>h2{margin-bottom:30px}#kmc-site [data-view="home"] .home-talks .three{gap:38px}#kmc-site [data-view="home"] .home-book{padding-top:70px;padding-bottom:65px}#kmc-site [data-view="home"] .home-book .split{gap:45px}}
+
+/* The real Kit embed sits in a dedicated, responsive signup section. */
+#kmc-site .newsletter{border-top:1px solid #ffffff20;padding-top:85px;padding-bottom:85px}
+#kmc-site .newsletter .split{align-items:center}
+#kmc-site .newsletter-form{min-width:0;background:#f1eee6;color:#111615;padding:24px;border-radius:3px;color-scheme:light}
+#kmc-site .newsletter-form .formkit-form{margin:0 auto!important;max-width:100%!important;width:100%!important}
+#kmc-site .newsletter-form input{max-width:100%;color:#111615}
+#kmc-site .newsletter-form p{max-width:100%}
+@media(max-width:650px){#kmc-site .newsletter{padding-top:60px;padding-bottom:60px}#kmc-site .newsletter-form{padding:12px}}
+#kmc-site .newsletter-form input[type="email"]{background:#fff!important;color:#111615!important;-webkit-text-fill-color:#111615!important;border:1px solid #a4aea6!important;font:15px/1.5 Arial,sans-serif!important}
+#kmc-site .newsletter-form input[type="email"]::placeholder{color:#59655d!important;opacity:1}
+#kmc-site .newsletter-form input:focus-visible{outline:2px solid #203c32;outline-offset:3px}

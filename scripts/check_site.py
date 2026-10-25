@@ -41,3 +41,10 @@ for name in pages:
 assert (root/'CNAME').read_text().strip()=='kevinmcoles.com'
 assert (root/'downloads/the-first-ten-minutes.pdf').is_file()
 print('PASS domain, retained download, all local links, image assets and structured data')
+
+for name in ['index.html','book/index.html']:
+ text=(root/name).read_text()
+ assert text.count('data-uid="6c1df4a9a1"')==1,(name,'expected one real Kit embed')
+ assert 'https://kevin-m-coles.kit.com/6c1df4a9a1/index.js' in text
+ assert 'id="updates"' in text
+print('PASS real Kit embeds on Home and Book')
