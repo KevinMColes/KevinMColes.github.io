@@ -54,3 +54,27 @@ html{scroll-behavior:smooth;background:#111615}body{margin:0}#kmc-site{min-heigh
 #kmc-site [data-view="about"] .stats{gap:32px;padding-top:16px;border-top:1px solid #ffffff30}
 @media(max-width:750px){#kmc-site [data-view="about"] .about-editorial{grid-template-columns:1fr;gap:16px}#kmc-site [data-view="about"] .about-section-body{max-width:none;padding:0}}
 @media(max-width:650px){#kmc-site .about-opening>img{width:100%;height:auto;max-width:none;inset:0 0 auto;mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%)}#kmc-site .about-opening:after{background:linear-gradient(0deg,#111615 0%,#111615 28%,rgba(17,22,21,.65) 43%,transparent 66%)}#kmc-site .about-opening-copy{width:100%;padding:370px 7% 45px}#kmc-site .about-opening-copy h1{font-size:clamp(35px,7.5vw,48px)}}
+
+/* The signature is the brand mark; keep it readable and give it room. */
+#kmc-site .nav{padding-top:14px;padding-bottom:14px;min-height:94px}
+#kmc-site .brand{display:block;width:210px;flex:0 0 auto;padding:0;border:0}
+#kmc-site .brand img{display:block;width:100%;height:auto}
+#kmc-site .footer-identity{display:flex;flex-direction:column;gap:12px}
+#kmc-site .footer-signature{display:block;width:160px}
+#kmc-site .footer-signature img{display:block;width:100%;height:auto}
+#kmc-site .strip>a{font:500 17px Georgia,serif;color:var(--paper);text-decoration:none;border-bottom:1px solid transparent;padding:4px 0}
+#kmc-site .strip>a:hover{border-bottom-color:var(--green)}
+#kmc-site .speaking-opening{max-width:none;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.65fr);gap:clamp(35px,5vw,80px);padding-bottom:65px}
+#kmc-site .speaking-opening h1{font-size:clamp(40px,4.3vw,66px);letter-spacing:-2px}
+#kmc-site .speaking-context{padding-top:8px;min-width:0}
+#kmc-site .context-line{border-top:1px solid #ffffff25;padding:20px 0 4px}
+#kmc-site .context-line>span{font:500 20px/1.2 Georgia,serif;color:var(--paper);display:block;margin-bottom:10px}
+#kmc-site .context-line p{font-size:13px;color:#c0c8c1}
+#kmc-site .press-feature{display:grid;grid-template-columns:.65fr 1.35fr;gap:40px;border-top:1px solid #87948a66;padding:38px 0 35px;align-items:center}
+#kmc-site .press-feature h2{margin-bottom:12px}
+#kmc-site .press-topic{font:italic 23px/1.3 Georgia,serif}
+#kmc-site [data-view="media"] .pagehead{max-width:1000px}
+#kmc-site [data-view="media"] .block.green p{max-width:790px}
+@media(max-width:850px){#kmc-site .speaking-opening{grid-template-columns:1fr}#kmc-site .speaking-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}#kmc-site .speaking-context>.eyebrow{grid-column:1/-1;margin-bottom:0}}
+@media(max-width:650px){#kmc-site .nav{padding-top:12px;padding-bottom:15px;gap:13px}#kmc-site .brand{width:185px}#kmc-site .speaking-context,#kmc-site .press-feature{grid-template-columns:1fr;gap:15px}#kmc-site .speaking-opening h1{font-size:43px;letter-spacing:-1.7px}#kmc-site .press-feature{padding:28px 0}#kmc-site .speaking-opening{padding-bottom:45px}}
+#kmc-site .press-quote{font:500 clamp(23px,2.5vw,32px)/1.35 Georgia,serif;margin:0 0 16px;letter-spacing:-.4px}#kmc-site .quote-credit{font-size:11px;text-transform:uppercase;letter-spacing:1.3px}
