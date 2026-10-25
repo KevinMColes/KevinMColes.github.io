@@ -32,3 +32,11 @@ html{scroll-behavior:smooth;background:#111615}body{margin:0}#kmc-site{min-heigh
 @media(min-width:1400px){#kmc-site .hero{min-height:740px}#kmc-site .hero-copy{min-height:740px}}@media(max-width:380px){#kmc-site .links{gap:12px}#kmc-site .brand{font-size:25px}#kmc-site .action{padding:12px 15px}#kmc-site [data-view="home"] .hero h1{font-size:58px}#kmc-site [data-view="about"] .about-opening-copy h1{font-size:43px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 
 #kmc-site .actual-book{width:85%;max-width:300px;margin:20px auto 10px;transform:rotate(-3deg);box-shadow:6px 5px 0 #d3cbbd,13px 16px 28px #11161526;border-left:4px solid #d4cbbb;background:#f1eee6}#kmc-site .actual-book img{display:block;width:100%;height:auto}#kmc-site .book-subtitle{font:italic 23px/1.4 Georgia,serif}#kmc-site .actual-book+.book-note{margin-top:24px}
+
+/* Keep the whole portrait in frame rather than enlarging it to fill a wide slot. */
+#kmc-site [data-view="home"] .hero>.photo img{inset:auto 4% 0 auto;width:auto;height:calc(100% - 36px);max-width:100%;object-fit:contain;object-position:right bottom;mask-image:linear-gradient(to right,transparent 0%,#000 18%,#000 100%);-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 18%,#000 100%)}
+#kmc-site .about-opening>img{inset:0 auto 0 0;width:67%;height:100%;object-fit:contain;object-position:left center}
+#kmc-site [data-view="about"] .about-bio,#kmc-site [data-view="about"] .wide-copy{width:100%;max-width:none;margin:0;text-align:left}
+#kmc-site [data-view="about"] .block p{max-width:none}
+@media(max-width:650px){#kmc-site [data-view="home"] .hero>.photo img{inset:14px 0 0;width:100%;height:100%;object-fit:contain;object-position:center top;mask-image:none;-webkit-mask-image:none}#kmc-site .about-opening>img{width:100%;height:490px;object-fit:contain;object-position:center top}}
+@media(min-width:651px){#kmc-site [data-view="home"] .hero:after{background:linear-gradient(180deg,#111615 0%,rgba(17,22,21,0) 18%),linear-gradient(90deg,#111615 0%,#111615 32%,rgba(17,22,21,.97) 39%,rgba(17,22,21,.7) 47%,rgba(17,22,21,.15) 61%,transparent 75%),linear-gradient(0deg,rgba(17,22,21,.55),transparent 25%)}}
