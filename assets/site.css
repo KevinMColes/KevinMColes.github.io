@@ -40,3 +40,17 @@ html{scroll-behavior:smooth;background:#111615}body{margin:0}#kmc-site{min-heigh
 #kmc-site [data-view="about"] .block p{max-width:none}
 @media(max-width:650px){#kmc-site [data-view="home"] .hero>.photo img{inset:14px 0 0;width:100%;height:100%;object-fit:contain;object-position:center top;mask-image:none;-webkit-mask-image:none}#kmc-site .about-opening>img{width:100%;height:490px;object-fit:contain;object-position:center top}}
 @media(min-width:651px){#kmc-site [data-view="home"] .hero:after{background:linear-gradient(180deg,#111615 0%,rgba(17,22,21,0) 18%),linear-gradient(90deg,#111615 0%,#111615 32%,rgba(17,22,21,.97) 39%,rgba(17,22,21,.7) 47%,rgba(17,22,21,.15) 61%,transparent 75%),linear-gradient(0deg,rgba(17,22,21,.55),transparent 25%)}}
+
+/* About: one blended photographic opening and a consistent editorial grid. */
+#kmc-site .about-opening>img{inset:0 auto 0 0;width:auto;height:100%;max-width:72%;object-fit:contain;object-position:left center;mask-image:linear-gradient(90deg,#000 0%,#000 52%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 52%,transparent 100%)}
+#kmc-site .about-opening:after{background:linear-gradient(90deg,transparent 0%,transparent 28%,rgba(17,22,21,.12) 42%,#111615 73%),linear-gradient(0deg,#111615 0%,transparent 18%)}
+#kmc-site .about-opening-copy{width:51%;padding:55px 7% 55px 0}
+#kmc-site .about-opening-copy h1{font-size:clamp(38px,4.3vw,62px);letter-spacing:-1.8px}
+#kmc-site .about-opening-copy h1 span{display:block}
+#kmc-site [data-view="about"] .about-editorial{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr);gap:clamp(32px,5vw,80px);align-items:start;width:100%}
+#kmc-site [data-view="about"] .about-section-heading h2{font-size:clamp(29px,3vw,43px)}
+#kmc-site [data-view="about"] .about-section-body{max-width:720px;min-width:0;padding-top:3px}
+#kmc-site [data-view="about"] .about-section-body p{max-width:none}
+#kmc-site [data-view="about"] .stats{gap:32px;padding-top:16px;border-top:1px solid #ffffff30}
+@media(max-width:750px){#kmc-site [data-view="about"] .about-editorial{grid-template-columns:1fr;gap:16px}#kmc-site [data-view="about"] .about-section-body{max-width:none;padding:0}}
+@media(max-width:650px){#kmc-site .about-opening>img{width:100%;height:auto;max-width:none;inset:0 0 auto;mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%)}#kmc-site .about-opening:after{background:linear-gradient(0deg,#111615 0%,#111615 28%,rgba(17,22,21,.65) 43%,transparent 66%)}#kmc-site .about-opening-copy{width:100%;padding:370px 7% 45px}#kmc-site .about-opening-copy h1{font-size:clamp(35px,7.5vw,48px)}}
