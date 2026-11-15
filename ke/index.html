@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#06080a">
 <meta name="robots" content="noindex, nofollow">
-<title>Kevin &amp; Ellie · Incoming Transmission</title>
-<meta property="og:title" content="Kevin & Ellie: you've got a secure message">
+<title>Kevin &amp; Elizabeth · Incoming Transmission</title>
+<meta property="og:title" content="Kevin & Elizabeth: you've got a secure message">
 <meta property="og:description" content="Tap to decrypt.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -103,9 +103,13 @@ input,select,textarea{width:100%;background:#080b0e;border:1px solid var(--line)
   padding:13px 12px;border-radius:2px;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.seg button{background:#080b0e;border:1px solid var(--line);color:var(--dim);font:600 13px var(--mono);padding:14px 6px;border-radius:2px;cursor:pointer}
-.seg button.on[data-v="yes"]{border-color:var(--mint);color:var(--mint);background:rgba(124,255,178,.07)}
-.seg button.on[data-v="no"]{border-color:var(--red);color:var(--red);background:rgba(255,107,107,.06)}
+.seg button{font:600 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:18px 6px;border-radius:2px;cursor:pointer;
+  border:1px solid;transition:background .15s,color .15s,box-shadow .15s,opacity .15s}
+.seg button[data-v="yes"]{border-color:var(--mint);color:var(--mint);background:rgba(124,255,178,.08)}
+.seg button[data-v="no"]{border-color:var(--red);color:var(--red);background:rgba(255,107,107,.08)}
+.seg button.on[data-v="yes"]{background:var(--mint);color:#06110b;box-shadow:0 0 22px rgba(124,255,178,.45)}
+.seg button.on[data-v="no"]{background:var(--red);color:#1a0606;box-shadow:0 0 22px rgba(255,107,107,.4)}
+.seg.picked button:not(.on){opacity:.45}
 .note{font-size:11px;color:var(--dim);margin-top:12px;line-height:1.6}
 
 .sig{text-align:center;margin:56px 0 0;color:var(--dim);font-size:11px;line-height:2}
@@ -185,8 +189,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
         <div class="k">Respond by <span id="rsvpBy" style="color:var(--gold)"></span></div>
         <label>Status</label>
         <div class="seg" id="seg">
-          <button type="button" data-v="yes">accept()</button>
-          <button type="button" data-v="no">decline()</button>
+          <button type="button" data-v="yes">Accept</button>
+          <button type="button" data-v="no">Decline</button>
         </div>
         <label for="nm">Your name(s)</label>
         <input id="nm" autocomplete="name" placeholder="who's coming">
@@ -216,7 +220,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
    ===================================================================== */
 const CONFIG = {
   nameA: "Kevin",
-  nameB: "Ellie",
+  nameB: "Elizabeth",
   start: "2027-02-24T15:00-07:00",    // Arizona time (no daylight saving)
   tz: "America/Phoenix",
   hours: 7,                           // length of the event, for the calendar file
@@ -403,7 +407,7 @@ function ics(){
   ].join("\r\n");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([body], {type: "text/calendar"}));
-  a.download = "kevin-ellie-wedding.ics";
+  a.download = "kevin-elizabeth-wedding.ics";
   document.body.appendChild(a); a.click(); a.remove();
 }
 
@@ -430,6 +434,7 @@ $("#seg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   status = b.dataset.v;
   document.querySelectorAll("#seg button").forEach(x => x.classList.toggle("on", x === b));
+  $("#seg").classList.add("picked");
   $("#ct").disabled = status === "no";
   rsvpLink();
 });
