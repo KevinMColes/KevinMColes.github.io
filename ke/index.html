@@ -122,7 +122,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
 @keyframes eq{0%,100%{height:4px}50%{height:18px}}
 .np-t{font-family:var(--serif);font-size:24px;line-height:1.1}
 .np-a{font-size:12px;color:var(--dim);margin-top:4px}
-.yt{position:relative;width:100%;height:220px;background:#000;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.yt{position:relative;width:100%;height:200px;background:#000;border:1px solid var(--line);border-radius:2px;overflow:hidden}
 .yt iframe,.yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
 .np-hint{font-size:11px;color:var(--gold);margin-top:10px;letter-spacing:.06em;display:none}
 .np-hint.show{display:block;animation:blink 1.4s steps(1) infinite}
@@ -262,7 +262,7 @@ const CONFIG = {
   rsvpText: "+19285007711",           // RSVPs arrive as a text to this number
   rsvpEmail: "",                      // optional: also offer email RSVP, e.g. "you@example.com"
   maxParty: 6,
-  song: { youtubeId: "VMi3JCMx92M", title: "Never Been In Love", artist: "Lauren Alaina ft. Kane Brown" },
+  song: { startAt: 36, youtubeId: "VMi3JCMx92M", title: "Never Been In Love", artist: "Lauren Alaina ft. Kane Brown" },
   schedule: [
     ["3:00 PM", "Ceremony",  "White Tank Mountains"],
     ["4:30 PM", "Cocktails", "Grab a drink, find your people."],
@@ -364,6 +364,7 @@ async function decrypt(){
 }
 
 async function reveal(){
+  music.start();
   try { localStorage.setItem("ke_seen", "1"); } catch(e){}
   $("#boot").style.display = "none";
   $("#invite").classList.add("on");
@@ -490,18 +491,24 @@ const music = (() => {
   window.onYouTubeIframeAPIReady = () => {
     player = new YT.Player("ytPlayer", {
       videoId: CONFIG.song.youtubeId,
-      playerVars: { playsinline: 1, rel: 0, modestbranding: 1, loop: 1, playlist: CONFIG.song.youtubeId },
+      playerVars: { playsinline: 1, rel: 0, modestbranding: 1, start: CONFIG.song.startAt },
       events: {
         onReady: () => { ready = true; if (wanted) play(); },
         onStateChange: e => {
           const on = e.data === YT.PlayerState.PLAYING;
           $("#npCard").classList.toggle("playing", on);
           if (on) { $("#npHint").classList.remove("show"); setBtn(); }
+          if (e.data === YT.PlayerState.ENDED) { player.seekTo(CONFIG.song.startAt, true); player.playVideo(); }
         }
       }
     });
   };
-  function play(){ try { player.unMute(); player.setVolume(80); player.playVideo(); } catch(e){} }
+  let first = true;
+  function play(){ try {
+    player.unMute(); player.setVolume(80);
+    if (first) { player.seekTo(CONFIG.song.startAt, true); first = false; }
+    player.playVideo();
+  } catch(e){} }
   function setBtn(){
     const b = $("#snd"); b.classList.add("show"); b.classList.toggle("off", muted);
     b.lastChild.textContent = muted ? "SOUND OFF" : "SOUND ON";
@@ -528,8 +535,8 @@ $("#snd").addEventListener("click", () => music.toggle());
 /* ---------- go ---------- */
 fill(); rsvpLink(); tick(); setInterval(tick, 1000);
 $("#cal").addEventListener("click", ics);
-$("#go").addEventListener("click", () => { music.start(); decrypt(); });
-$("#skip").addEventListener("click", () => { music.start(); reveal(); });
+$("#go").addEventListener("click", decrypt);
+$("#skip").addEventListener("click", reveal);
 let seen = false; try { seen = localStorage.getItem("ke_seen") === "1"; } catch(e){}
 if (seen) $("#skip").textContent = "skip intro (you've seen it)";
 boot();
