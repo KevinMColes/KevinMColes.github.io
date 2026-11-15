@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080a">
+<meta name="robots" content="noindex, nofollow">
+<title>Kevin &amp; Ellie · Incoming Transmission</title>
+<meta property="og:title" content="Kevin & Ellie: you've got a secure message">
+<meta property="og:description" content="Tap to decrypt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   EDIT THE DETAILS IN THE CONFIG BLOCK IN THE <script> BELOW.
+   ========================================================= */
+:root{
+  --bg:#06080a; --panel:#0c1014; --line:#1b232b; --dim:#56636f; --text:#e9efe9;
+  --mint:#7cffb2; --mint-d:#2f8a5c; --gold:#e8c88a; --red:#ff6b6b;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --serif:"Instrument Serif","Times New Roman",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased}
+body{min-height:100svh;overflow-x:hidden}
+a{color:inherit}
+#rain{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.35;pointer-events:none}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.85) 100%)}
+main{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:max(28px,env(safe-area-inset-top)) 22px 60px}
+
+/* ---------- BOOT ---------- */
+#boot{min-height:calc(100svh - 60px);display:flex;flex-direction:column;justify-content:center;gap:22px}
+.log{font-size:13px;line-height:1.85;color:var(--dim);min-height:220px}
+.log .ok{color:var(--mint)} .log .warn{color:var(--gold)} .log .w{color:var(--text)}
+.caret{display:inline-block;width:.6em;height:1.05em;background:var(--mint);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.bar{height:2px;background:var(--line);overflow:hidden;opacity:0;transition:opacity .3s}
+.bar i{display:block;height:100%;width:0;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+.decrypt{appearance:none;border:1px solid var(--mint);background:rgba(124,255,178,.06);color:var(--mint);
+  font:600 14px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;padding:20px;border-radius:2px;cursor:pointer;
+  opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s,background .2s;pointer-events:none;
+  box-shadow:0 0 0 rgba(124,255,178,0);animation:pulse 2.4s ease-in-out infinite}
+.decrypt.show{opacity:1;transform:none;pointer-events:auto}
+.decrypt:active{background:rgba(124,255,178,.18)}
+@keyframes pulse{50%{box-shadow:0 0 28px rgba(124,255,178,.25)}}
+.skip{align-self:center;background:none;border:0;color:var(--dim);font:12px var(--mono);text-decoration:underline;cursor:pointer;opacity:.7}
+
+/* ---------- INVITE ---------- */
+#invite{display:none}
+#invite.on{display:block}
+.eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:blink 1.6s steps(1) infinite}
+.hero{padding:9vh 0 7vh;text-align:left}
+.to{font-size:13px;color:var(--dim);margin:22px 0 6px}
+.to b{color:var(--text);font-weight:400}
+.names{font-family:var(--serif);font-weight:400;font-size:clamp(64px,21vw,112px);line-height:.86;letter-spacing:-.01em;margin:10px 0 0}
+.names .amp{font-style:italic;color:var(--gold);display:block;font-size:.55em;line-height:1.1;margin:.08em 0 .02em .1em}
+.names span.g{display:block}
+.sub{margin-top:26px;font-size:14px;line-height:1.7;color:#b8c3bc;max-width:30ch}
+.sub em{font-family:var(--serif);font-style:italic;font-size:1.35em;color:var(--text)}
+
+.card{border:1px solid var(--line);background:linear-gradient(180deg,rgba(12,16,20,.92),rgba(8,11,14,.92));
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:3px;margin:18px 0;position:relative;
+  opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.card.in{opacity:1;transform:none}
+.card header{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);
+  font-size:11px;color:var(--dim);letter-spacing:.08em}
+.dots i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--line);margin-left:5px}
+.card .body{padding:20px 16px 22px}
+.k{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.big{font-family:var(--serif);font-size:40px;line-height:1.02}
+.big i{color:var(--gold)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.v{font-size:15px;line-height:1.5}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{flex:1 1 auto;text-align:center;text-decoration:none;border:1px solid var(--line);background:#0f151a;color:var(--text);
+  font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:15px 12px;border-radius:2px;cursor:pointer}
+.btn.p{border-color:var(--mint);color:var(--mint);background:rgba(124,255,178,.06)}
+.btn:active{transform:translateY(1px)}
+
+/* countdown */
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.cd div{border:1px solid var(--line);padding:14px 4px 10px;text-align:center;border-radius:2px;background:#090c0f}
+.cd b{display:block;font:300 30px/1 var(--mono);color:var(--mint);text-shadow:0 0 14px rgba(124,255,178,.35);font-variant-numeric:tabular-nums}
+.cd small{display:block;margin-top:8px;font-size:9px;letter-spacing:.24em;color:var(--dim);text-transform:uppercase}
+
+/* timeline */
+.tl{list-style:none;font-size:13px}
+.tl li{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.tl li:last-child{border-bottom:0}
+.tl .t{color:var(--mint);font-variant-numeric:tabular-nums}
+.tl .d b{display:block;font-weight:600;color:var(--text);margin-bottom:3px}
+.tl .d span{color:var(--dim)}
+
+/* rsvp */
+label{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:16px 0 8px}
+input,select,textarea{width:100%;background:#080b0e;border:1px solid var(--line);color:var(--text);font:15px var(--mono);
+  padding:13px 12px;border-radius:2px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{background:#080b0e;border:1px solid var(--line);color:var(--dim);font:600 13px var(--mono);padding:14px 6px;border-radius:2px;cursor:pointer}
+.seg button.on[data-v="yes"]{border-color:var(--mint);color:var(--mint);background:rgba(124,255,178,.07)}
+.seg button.on[data-v="no"]{border-color:var(--red);color:var(--red);background:rgba(255,107,107,.06)}
+.note{font-size:11px;color:var(--dim);margin-top:12px;line-height:1.6}
+
+.sig{text-align:center;margin:56px 0 0;color:var(--dim);font-size:11px;line-height:2}
+.sig .s{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--text);display:block;margin-bottom:6px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  #rain{display:none}
+}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="scan"></div><div class="vignette"></div>
+
+<main>
+  <!-- ================= BOOT SEQUENCE ================= -->
+  <section id="boot" aria-live="polite">
+    <div class="log" id="log"></div>
+    <div class="bar" id="bar"><i></i></div>
+    <button class="decrypt" id="go">[ tap to decrypt ]</button>
+    <button class="skip" id="skip">skip intro</button>
+  </section>
+
+  <!-- ================= INVITATION ================= -->
+  <section id="invite">
+    <div class="hero">
+      <div class="eyebrow">Transmission decrypted</div>
+      <p class="to" id="to"></p>
+      <h1 class="names" id="names" aria-label="">
+        <span class="g" data-s="A"></span>
+        <span class="amp">&amp;</span>
+        <span class="g" data-s="B"></span>
+      </h1>
+      <p class="sub">are getting married, and you're on the <em>very short</em> list of people we want in the room.</p>
+    </div>
+
+    <article class="card">
+      <header><span>event.config</span><span class="dots"><i></i><i></i><i></i></span></header>
+      <div class="body">
+        <div class="k">When</div>
+        <div class="big" id="dateBig"></div>
+        <div class="row">
+          <div><div class="k">Time</div><div class="v" id="time"></div></div>
+          <div><div class="k">Dress</div><div class="v" id="dress"></div></div>
+        </div>
+        <div class="row" style="grid-template-columns:1fr">
+          <div><div class="k">Where</div><div class="v" id="venue"></div></div>
+        </div>
+        <div class="btns">
+          <a class="btn" id="maps" target="_blank" rel="noopener">Open in maps</a>
+          <button class="btn" id="cal">Add to calendar</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <header><span>countdown.exe</span><span class="dots"><i></i><i></i><i></i></span></header>
+      <div class="body">
+        <div class="cd" id="cd">
+          <div><b id="cdD">--</b><small>days</small></div>
+          <div><b id="cdH">--</b><small>hrs</small></div>
+          <div><b id="cdM">--</b><small>min</small></div>
+          <div><b id="cdS">--</b><small>sec</small></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card">
+      <header><span>the_day.log</span><span class="dots"><i></i><i></i><i></i></span></header>
+      <div class="body"><ul class="tl" id="tl"></ul></div>
+    </article>
+
+    <article class="card" id="rsvpCard">
+      <header><span>rsvp.sh</span><span class="dots"><i></i><i></i><i></i></span></header>
+      <div class="body">
+        <div class="k">Respond by <span id="rsvpBy" style="color:var(--gold)"></span></div>
+        <label>Status</label>
+        <div class="seg" id="seg">
+          <button type="button" data-v="yes">accept()</button>
+          <button type="button" data-v="no">decline()</button>
+        </div>
+        <label for="nm">Your name(s)</label>
+        <input id="nm" autocomplete="name" placeholder="who's coming">
+        <label for="ct">How many in your party</label>
+        <select id="ct"></select>
+        <label for="msg">Message to the couple <span style="text-transform:none;letter-spacing:0">(optional)</span></label>
+        <textarea id="msg" rows="2" placeholder="// optional"></textarea>
+        <div class="btns">
+          <a class="btn p" id="send">Send RSVP ↗</a>
+        </div>
+        <p class="note" id="rsvpNote"></p>
+      </div>
+    </article>
+
+    <div class="sig">
+      <span class="s" id="sig"></span>
+      // built with love · no cookies · no tracking<br>
+      <span id="build"></span>
+    </div>
+  </section>
+</main>
+
+<script>
+/* =====================================================================
+   CONFIG: change these and you're done. Anything in [BRACKETS] is a
+   placeholder. Dates use 24h local time: "YYYY-MM-DDTHH:MM".
+   ===================================================================== */
+const CONFIG = {
+  nameA: "Kevin",
+  nameB: "Ellie",
+  start: "2027-02-24T17:00-07:00",    // Arizona time (no daylight saving)
+  tz: "America/Phoenix",
+  hours: 5,                           // length of the event, for the calendar file
+  venueName: "Kim & Roger's",
+  venueAddress: "9909 W Oakstone Dr, Sun City, AZ",
+  dress: "Wedding attire",
+  rsvpBy: "February 10, 2027",
+  rsvpText: "+19285007711",           // RSVPs arrive as a text to this number
+  rsvpEmail: "",                      // optional: also offer email RSVP, e.g. "you@example.com"
+  maxParty: 6,
+  schedule: [
+    ["5:00 PM", "Cocktails", "Doors open. Grab a drink, find your people."],
+    ["6:00 PM", "Dinner",    "Sit down, eat well, toast the couple."],
+    ["7:30 PM", "Party",     "Music up. Stay late."],
+  ],
+};
+/* ===================================================================== */
+
+const $ = s => document.querySelector(s);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const start = new Date(CONFIG.start);
+const params = new URLSearchParams(location.search);
+const guest = (params.get("to") || "").trim().slice(0, 40);   // personal links: ?to=Aunt%20Linda
+const glyphs = "アイウエオカキクケコサシスセソ01<>/{}[]#$%&*+=?ABCDEFGHJKLMNPRSTUVWXYZ";
+
+/* ---------- background rain ---------- */
+(function rain(){
+  if (reduce) return;
+  const c = $("#rain"), x = c.getContext("2d");
+  let w, h, cols, drops, fs = 15;
+  const size = () => {
+    const d = Math.min(devicePixelRatio || 1, 2);
+    w = c.width = innerWidth * d; h = c.height = innerHeight * d;
+    fs = 15 * d; cols = Math.floor(w / (fs * 1.6));
+    drops = Array.from({length: cols}, () => Math.random() * -h / fs);
+  };
+  size(); addEventListener("resize", size);
+  let last = 0;
+  (function f(t){
+    requestAnimationFrame(f);
+    if (t - last < 55) return; last = t;
+    x.fillStyle = "rgba(6,8,10,.16)"; x.fillRect(0, 0, w, h);
+    x.font = fs + "px JetBrains Mono, monospace";
+    for (let i = 0; i < cols; i++) {
+      const y = drops[i] * fs;
+      x.fillStyle = Math.random() > .975 ? "#e8c88a" : "#2f8a5c";
+      x.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fs * 1.6, y);
+      if (y > h && Math.random() > .975) drops[i] = 0;
+      drops[i] += .55;
+    }
+  })(0);
+})();
+
+/* ---------- scramble text ---------- */
+function scramble(el, text, dur = 1400){
+  return new Promise(res => {
+    if (reduce) { el.textContent = text; return res(); }
+    const t0 = performance.now();
+    const settle = [...text].map((_, i) => (i / text.length) * .6 + Math.random() * .4);
+    (function f(now){
+      const p = Math.min((now - t0) / dur, 1);
+      el.textContent = [...text].map((ch, i) =>
+        ch === " " ? " " : p >= settle[i] ? ch : glyphs[(Math.random() * glyphs.length) | 0]
+      ).join("");
+      p < 1 ? requestAnimationFrame(f) : res();
+    })(t0);
+  });
+}
+
+/* ---------- boot sequence ---------- */
+const sleep = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+const recipient = guest ? guest.toUpperCase() : "FAMILY";
+const lines = [
+  ["", "> incoming transmission detected"],
+  ["", "> sender: K. & E. Coles"],
+  ["", "> establishing secure channel ........ "],
+  ["ok", "  [OK] tls 1.3 · aes 256 gcm"],
+  ["", "> verifying recipient ................ "],
+  ["ok", `  [OK] ${recipient}`],
+  ["", "> clearance level: "],
+  ["warn", "  INNER CIRCLE  (est. 30 people worldwide)"],
+  ["", "> payload: 1 × invitation.enc"],
+  ["w", "> ready."],
+];
+
+async function boot(){
+  const log = $("#log");
+  for (const [cls, txt] of lines) {
+    const p = document.createElement("div");
+    if (cls) p.className = cls;
+    log.appendChild(p);
+    for (let i = 0; i < txt.length; i++) { p.textContent = txt.slice(0, i + 1); if (i % 3 === 0) await sleep(12); }
+    await sleep(cls ? 260 : 140);
+  }
+  const caret = document.createElement("span"); caret.className = "caret"; log.lastChild.append(" ", caret);
+  $("#go").classList.add("show");
+}
+
+async function decrypt(){
+  const go = $("#go");
+  go.classList.remove("show"); go.disabled = true;
+  const bar = $("#bar"), fill = bar.querySelector("i");
+  bar.style.opacity = 1;
+  const log = $("#log"); const p = document.createElement("div"); p.className = "ok"; log.appendChild(p);
+  for (let i = 0; i <= 100; i += 4) { fill.style.width = i + "%"; p.textContent = `> decrypting… ${i}%`; await sleep(28); }
+  await sleep(250);
+  reveal();
+}
+
+async function reveal(){
+  try { localStorage.setItem("ke_seen", "1"); } catch(e){}
+  $("#boot").style.display = "none";
+  $("#invite").classList.add("on");
+  scrollTo(0, 0);
+  if (navigator.vibrate) try { navigator.vibrate([20, 40, 20]); } catch(e){}
+  $("#to").innerHTML = guest ? `for: <b></b>` : "";
+  if (guest) $("#to b").textContent = guest;
+  const [a, b] = document.querySelectorAll("#names .g");
+  $("#names").setAttribute("aria-label", `${CONFIG.nameA} and ${CONFIG.nameB}`);
+  await scramble(a, CONFIG.nameA, 1100);
+  await scramble(b, CONFIG.nameB, 1100);
+}
+
+/* ---------- fill details ---------- */
+function fill(){
+  const valid = !isNaN(start);
+  const tz = {timeZone: CONFIG.tz};
+  $("#dateBig").innerHTML = valid
+    ? `${start.toLocaleDateString("en-US",{...tz,weekday:"long"})},<br><i>${start.toLocaleDateString("en-US",{...tz,month:"long",day:"numeric"})}</i> ${start.toLocaleDateString("en-US",{...tz,year:"numeric"})}`
+    : "[Date]";
+  $("#time").textContent = valid ? start.toLocaleTimeString("en-US",{...tz,hour:"numeric",minute:"2-digit"}) + " (Arizona)" : "[Time]";
+  $("#dress").textContent = CONFIG.dress;
+  $("#venue").innerHTML = "";
+  const vn = document.createElement("div"); vn.style.fontWeight = 600; vn.textContent = CONFIG.venueName;
+  const va = document.createElement("div"); va.style.color = "var(--dim)"; va.textContent = CONFIG.venueAddress;
+  $("#venue").append(vn, va);
+  $("#maps").href = "https://maps.google.com/?q=" + encodeURIComponent(CONFIG.venueAddress);
+  $("#rsvpBy").textContent = CONFIG.rsvpBy;
+  $("#sig").textContent = `${CONFIG.nameA} & ${CONFIG.nameB}`;
+  $("#build").textContent = `build ${valid ? start.toLocaleDateString("en-CA",tz).replaceAll("-",".") : ""} · v1.0 · forever`;
+
+  const tl = $("#tl");
+  CONFIG.schedule.forEach(([t, title, note]) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="t"></span><span class="d"><b></b><span></span></span>`;
+    li.querySelector(".t").textContent = t;
+    li.querySelector("b").textContent = title;
+    li.querySelector(".d span").textContent = note;
+    tl.appendChild(li);
+  });
+
+  const ct = $("#ct");
+  for (let i = 1; i <= CONFIG.maxParty; i++) ct.add(new Option(i === 1 ? "1 (just me)" : String(i), i));
+  if (guest) $("#nm").value = guest;
+}
+
+/* ---------- countdown ---------- */
+function tick(){
+  const ms = start - new Date();
+  const pad = n => String(n).padStart(2, "0");
+  if (isNaN(ms)) return;
+  if (ms <= 0) { $("#cd").innerHTML = `<div style="grid-column:1/-1"><b>// married</b><small>thanks for being there</small></div>`; return; }
+  const s = Math.floor(ms / 1000);
+  $("#cdD").textContent = Math.floor(s / 86400);
+  $("#cdH").textContent = pad(Math.floor(s / 3600) % 24);
+  $("#cdM").textContent = pad(Math.floor(s / 60) % 60);
+  $("#cdS").textContent = pad(s % 60);
+}
+
+/* ---------- calendar (.ics) ---------- */
+function ics(){
+  const f = d => d.toISOString().replace(/[-:]/g,"").slice(0,15) + "Z";
+  const end = new Date(start.getTime() + CONFIG.hours * 3600e3);
+  const esc = s => s.replace(/[,;\\]/g, m => "\\" + m);
+  const body = [
+    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//KE//Wedding//EN","BEGIN:VEVENT",
+    "UID:" + Date.now() + "@ke-wedding",
+    "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g,"").slice(0,15) + "Z",
+    "DTSTART:" + f(start), "DTEND:" + f(end),
+    "SUMMARY:" + esc(`${CONFIG.nameA} & ${CONFIG.nameB} Wedding`),
+    "LOCATION:" + esc(`${CONFIG.venueName}, ${CONFIG.venueAddress}`),
+    "END:VEVENT","END:VCALENDAR"
+  ].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([body], {type: "text/calendar"}));
+  a.download = "kevin-ellie-wedding.ics";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- RSVP ---------- */
+let status = "";
+function rsvpLink(){
+  const n = $("#nm").value.trim() || "[name]";
+  const c = $("#ct").value, m = $("#msg").value.trim();
+  const txt = status === "no"
+    ? `RSVP: ${n} can't make it. ${m}`.trim()
+    : `RSVP: ${n} is a YES, party of ${c}. ${m}`.trim();
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  $("#send").href = `sms:${CONFIG.rsvpText}${ios ? "&" : "?"}body=${encodeURIComponent(txt)}`;
+  $("#rsvpNote").innerHTML = "";
+  const note = document.createTextNode("Opens your messages app with the RSVP already written. Just hit send.");
+  $("#rsvpNote").append(note);
+  if (CONFIG.rsvpEmail) {
+    const a = document.createElement("a");
+    a.href = `mailto:${CONFIG.rsvpEmail}?subject=${encodeURIComponent("Wedding RSVP: " + n)}&body=${encodeURIComponent(txt)}`;
+    a.textContent = " Prefer email?"; $("#rsvpNote").append(a);
+  }
+}
+$("#seg").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  status = b.dataset.v;
+  document.querySelectorAll("#seg button").forEach(x => x.classList.toggle("on", x === b));
+  $("#ct").disabled = status === "no";
+  rsvpLink();
+});
+["#nm","#ct","#msg"].forEach(s => $(s).addEventListener("input", rsvpLink));
+$("#send").addEventListener("click", e => {
+  if (!status) { e.preventDefault(); $("#seg").animate([{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"none"}],{duration:250}); }
+});
+
+/* ---------- reveal cards on scroll ---------- */
+const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), {threshold: .15});
+document.querySelectorAll(".card").forEach(c => io.observe(c));
+
+/* ---------- go ---------- */
+fill(); rsvpLink(); tick(); setInterval(tick, 1000);
+$("#cal").addEventListener("click", ics);
+$("#go").addEventListener("click", decrypt);
+$("#skip").addEventListener("click", reveal);
+let seen = false; try { seen = localStorage.getItem("ke_seen") === "1"; } catch(e){}
+if (seen) $("#skip").textContent = "skip intro (you've seen it)";
+boot();
+</script>
+</body>
+</html>
