@@ -51,8 +51,7 @@ main{position:relative;z-index:2;max-width:520px;margin:0 auto;padding:max(28px,
 .skip{align-self:center;background:none;border:0;color:var(--dim);font:12px var(--mono);text-decoration:underline;cursor:pointer;opacity:.7}
 
 /* ---------- INVITE ---------- */
-#invite{display:none}
-#invite.on{display:block}
+#invite:not(.on){position:fixed;left:-300vw;top:0;width:100%;visibility:hidden;pointer-events:none}
 .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--mint);display:flex;align-items:center;gap:10px}
 .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:blink 1.6s steps(1) infinite}
 .hero{padding:9vh 0 7vh;text-align:left}
@@ -115,6 +114,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
 .sig{text-align:center;margin:56px 0 0;color:var(--dim);font-size:11px;line-height:2}
 .sig .s{font-family:var(--serif);font-style:italic;font-size:28px;color:var(--text);display:block;margin-bottom:6px}
 
+.np-meta{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.eq{display:flex;align-items:flex-end;gap:3px;height:18px}
+.eq i{width:3px;background:var(--mint);height:4px;border-radius:1px}
+.playing .eq i{animation:eq .9s ease-in-out infinite}
+.playing .eq i:nth-child(2){animation-delay:-.3s}.playing .eq i:nth-child(3){animation-delay:-.6s}.playing .eq i:nth-child(4){animation-delay:-.15s}
+@keyframes eq{0%,100%{height:4px}50%{height:18px}}
+.np-t{font-family:var(--serif);font-size:24px;line-height:1.1}
+.np-a{font-size:12px;color:var(--dim);margin-top:4px}
+.yt{position:relative;width:100%;height:220px;background:#000;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.yt iframe,.yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+.np-hint{font-size:11px;color:var(--gold);margin-top:10px;letter-spacing:.06em;display:none}
+.np-hint.show{display:block;animation:blink 1.4s steps(1) infinite}
 .snd{position:fixed;top:max(14px,env(safe-area-inset-top));right:14px;z-index:5;display:none;
   background:rgba(6,8,10,.75);border:1px solid var(--line);color:var(--mint);font:600 10px/1 var(--mono);
   letter-spacing:.2em;padding:10px 12px;border-radius:2px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
@@ -154,6 +165,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint-d)}
       </h1>
       <p class="sub">are getting married, and you're on the <em>very short</em> list of people we want in the room.</p>
     </div>
+
+    <article class="card" id="npCard">
+      <header><span>now_playing</span><span class="dots"><i></i><i></i><i></i></span></header>
+      <div class="body">
+        <div class="np-meta">
+          <div class="eq"><i></i><i></i><i></i><i></i></div>
+          <div><div class="np-t" id="npT"></div><div class="np-a" id="npA"></div></div>
+        </div>
+        <div class="yt"><div id="ytPlayer"></div></div>
+        <p class="np-hint" id="npHint">tap play to hear our song</p>
+      </div>
+    </article>
 
     <article class="card">
       <header><span>event.config</span><span class="dots"><i></i><i></i><i></i></span></header>
@@ -239,6 +262,7 @@ const CONFIG = {
   rsvpText: "+19285007711",           // RSVPs arrive as a text to this number
   rsvpEmail: "",                      // optional: also offer email RSVP, e.g. "you@example.com"
   maxParty: 6,
+  song: { youtubeId: "VMi3JCMx92M", title: "Never Been In Love", artist: "Lauren Alaina ft. Kane Brown" },
   schedule: [
     ["3:00 PM", "Ceremony",  "White Tank Mountains"],
     ["4:30 PM", "Cocktails", "Grab a drink, find your people."],
@@ -455,75 +479,48 @@ $("#send").addEventListener("click", e => {
 const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } }), {threshold: .15});
 document.querySelectorAll(".card").forEach(c => io.observe(c));
 
-/* ---------- soundtrack (generated live, no audio file) ---------- */
+/* ---------- soundtrack: official YouTube upload ---------- */
 const music = (() => {
-  let ctx, master, arpBus, started = false, muted = false, next = 0, bar = 0, timer;
-  const BPM = 76, BEAT = 60 / BPM, BAR = BEAT * 4;
-  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
-  // Cmaj7, Am7, Fmaj7, G6
-  const prog = [[36,[60,64,67,71]],[33,[57,60,64,67]],[29,[57,60,65,69]],[31,[55,59,62,64]]];
-  const arpPat = [0,2,1,3,2,1,3,2];
-
-  function voice(type, freq, t, a, sus, r, peak, dest, detune = 0){
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = type; o.frequency.value = freq; o.detune.value = detune;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(peak, t + a);
-    g.gain.setValueAtTime(peak, t + a + sus);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + a + sus + r);
-    o.connect(g); g.connect(dest); o.start(t); o.stop(t + a + sus + r + .05);
-  }
-  function pluck(freq, t, peak){
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine"; o.frequency.value = freq;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(peak, t + .008);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + .9);
-    o.connect(g); g.connect(arpBus); o.start(t); o.stop(t + 1);
-  }
-  function playBar(t){
-    const [root, notes] = prog[bar % prog.length];
-    notes.forEach(n => {
-      voice("triangle", hz(n), t, 1.1, BAR - 1.1, 1.4, .035, master, -7);
-      voice("triangle", hz(n), t, 1.1, BAR - 1.1, 1.4, .035, master, 7);
+  let player, ready = false, wanted = false, muted = false;
+  $("#npT").textContent = CONFIG.song.title;
+  $("#npA").textContent = CONFIG.song.artist;
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = () => {
+    player = new YT.Player("ytPlayer", {
+      videoId: CONFIG.song.youtubeId,
+      playerVars: { playsinline: 1, rel: 0, modestbranding: 1, loop: 1, playlist: CONFIG.song.youtubeId },
+      events: {
+        onReady: () => { ready = true; if (wanted) play(); },
+        onStateChange: e => {
+          const on = e.data === YT.PlayerState.PLAYING;
+          $("#npCard").classList.toggle("playing", on);
+          if (on) { $("#npHint").classList.remove("show"); setBtn(); }
+        }
+      }
     });
-    voice("sine", hz(root), t, .3, BAR - .6, .9, .16, master);
-    if (bar >= 2) arpPat.forEach((k, i) => {
-      if (i > 0 && Math.random() < .18) return;
-      pluck(hz(notes[k] + 12), t + i * BEAT / 2, i % 4 === 0 ? .07 : .045);
-    });
-    bar++;
-  }
-  function tick(){ while (next < ctx.currentTime + 1.2) { playBar(next); next += BAR; } }
-
-  function start(){
-    if (started) return; started = true;
-    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-    try { ctx = new AC(); } catch(e){ return; }
-    if (ctx.state === "suspended") ctx.resume();
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2600; lp.Q.value = .4;
-    master = ctx.createGain(); master.gain.value = 0;
-    master.connect(lp); lp.connect(ctx.destination);
-    arpBus = ctx.createGain(); arpBus.gain.value = 1; arpBus.connect(master);
-    const dl = ctx.createDelay(2), fb = ctx.createGain(), wet = ctx.createGain();
-    dl.delayTime.value = BEAT * .75; fb.gain.value = .38; wet.gain.value = .45;
-    arpBus.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(master);
-    const now = ctx.currentTime;
-    master.gain.setValueAtTime(0, now); master.gain.linearRampToValueAtTime(.9, now + 4);
-    next = now + .1; tick(); timer = setInterval(tick, 250);
-    const b = $("#snd"); b.classList.add("show");
-  }
-  function toggle(){
-    if (!ctx) { start(); return; }
-    muted = !muted;
-    muted ? ctx.suspend() : ctx.resume();
-    const b = $("#snd"); b.classList.toggle("off", muted);
+  };
+  function play(){ try { player.unMute(); player.setVolume(80); player.playVideo(); } catch(e){} }
+  function setBtn(){
+    const b = $("#snd"); b.classList.add("show"); b.classList.toggle("off", muted);
     b.lastChild.textContent = muted ? "SOUND OFF" : "SOUND ON";
   }
-  document.addEventListener("visibilitychange", () => {
-    if (!ctx || muted) return;
-    document.hidden ? ctx.suspend() : ctx.resume();
-  });
+  function start(){
+    wanted = true;
+    if (ready) play();
+    // phones that block it (mostly iPhones) get a nudge to tap play themselves
+    setTimeout(() => {
+      const st = ready && player.getPlayerState ? player.getPlayerState() : -1;
+      if (st !== 1 && st !== 3) $("#npHint").classList.add("show");
+    }, 3500);
+  }
+  function toggle(){
+    if (!ready) return;
+    muted = !muted;
+    if (muted) player.pauseVideo(); else play();
+    setBtn();
+  }
   return { start, toggle };
 })();
 $("#snd").addEventListener("click", () => music.toggle());
